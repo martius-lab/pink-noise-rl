@@ -1,0 +1,21 @@
+[tool.poetry]
+name = "pink-noise-rl"
+version = "1.0.0"
+description = "Pink noise for exploration in reinforcement learning"
+authors = ["Onno Eberhard <onnoeberhard@gmail.com>"]
+license = "MIT"
+readme = "README.md"
+repository = "https://github.com/martius-lab/pink-noise-rl"
+packages = [
+    { include = "pink" }
+]
+
+
+[tool.poetry.dependencies]
+python = "^3.8"
+numpy = "*"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
