@@ -31,7 +31,7 @@ class ColoredActionNoise(ActionNoise):
         super().__init__()
         self._beta = beta
         self._sigma = sigma
-        self._gen = [ColoredNoiseProcess(beta=b, scale=s, chunksize=seq_len, largest_wavelength=None, rng=rng)
+        self._gen = [ColoredNoiseProcess(beta=b, scale=s, size=seq_len, rng=rng)
                      for b, s in zip(beta, sigma)]
 
     def __call__(self) -> np.ndarray:
@@ -85,7 +85,7 @@ class ColoredNoiseDist(SquashedDiagGaussianDistribution):
             A small value to avoid NaN due to numerical imprecision.
         """
         super().__init__(len(beta), epsilon)
-        self.cn_processes = [ColoredNoiseProcess(beta=b, chunksize=seq_len, largest_wavelength=None, rng=rng)
+        self.cn_processes = [ColoredNoiseProcess(beta=b, size=seq_len, rng=rng)
                              for b in beta]
 
     def sample(self) -> th.Tensor:

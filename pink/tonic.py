@@ -24,7 +24,7 @@ class MPO_CN(MPO):
         if np.isscalar(beta):
             beta = [beta] * self.action_space.shape[0]
         self.cn_processes = [
-            ColoredNoiseProcess(beta=b, chunksize=self.seq_len, largest_wavelength=None, rng=self.rng) for b in beta]
+            ColoredNoiseProcess(beta=b, size=self.seq_len, rng=self.rng) for b in beta]
 
     def _step(self, observations):
         observations = th.as_tensor(observations, dtype=th.float32)
