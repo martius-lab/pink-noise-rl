@@ -82,11 +82,12 @@ trainer.run()
 ## Citing
 If you use this code in your research, please cite our paper:
 ```bibtex
-@misc{eberhard-2022-pink,
-  title = {Pink {{Noise Is All You Need}}: {{Colored Noise Exploration}} in {{Deep Reinforcement Learning}}},
+@inproceedings{eberhard-2022-pink,
+  title = {Pink Noise Is All You Need: Colored Noise Exploration in Deep Reinforcement Learning},
   author = {Eberhard, Onno and Hollenstein, Jakob and Pinneri, Cristina and Martius, Georg},
-  date = {2022},
-  howpublished = {NeurIPS Deep RL Workshop 2022}
+  booktitle = {Deep Reinforcement Learning Workshop NeurIPS 2022},
+  year = {2022},
+  url = {https://openreview.net/forum?id=imxyoQIC5XT}
 }
 ```
 
