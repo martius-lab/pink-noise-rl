@@ -6,7 +6,7 @@ This repository contains easy-to-use implementations of pink noise and general c
 - `ColoredNoiseDist`, `PinkNoiseDist` to be used with stochastic policy algorithms like SAC in Stable Baselines3
 - `MPO_CN` for using colored noise (incl. pink noise) with MPO using the Tonic RL library.
 
-For more information, please see our paper: [Pink Noise Is All You Need: Colored Noise Exploration in Deep Reinforcement Learning](https://bit.ly/pink-noise-rl).
+For more information, please see our paper: [Pink Noise Is All You Need: Colored Noise Exploration in Deep Reinforcement Learning](https://bit.ly/pink-noise-rl) (ICLR 2023 Spotlight).
 
 ## Installation
 You can install the library via pip:
@@ -82,12 +82,13 @@ trainer.run()
 ## Citing
 If you use this code in your research, please cite our paper:
 ```bibtex
-@inproceedings{eberhard-2022-pink,
+@inproceedings{eberhard-2023-pink,
   title = {Pink Noise Is All You Need: Colored Noise Exploration in Deep Reinforcement Learning},
   author = {Eberhard, Onno and Hollenstein, Jakob and Pinneri, Cristina and Martius, Georg},
-  booktitle = {Deep Reinforcement Learning Workshop NeurIPS 2022},
-  year = {2022},
-  url = {https://openreview.net/forum?id=imxyoQIC5XT}
+  booktitle = {Proceedings of the Eleventh International Conference on Learning Representations (ICLR 2023)},
+  month = may,
+  year = {2023},
+  url = {https://openreview.net/forum?id=hQ9V5QN27eS}
 }
 ```
 
