@@ -1,9 +1,11 @@
 from . import colorednoise as cn
 
+
 class ColoredNoiseProcess():
     """Infinite colored noise process.
-    
-    Implemented as a buffer: every `size[-1]` samples, a cut to a new time series starts. As this cut influences the PSD of the combined signal, the maximum period (1 / low-frequency cutoff) can be specified.
+
+    Implemented as a buffer: every `size[-1]` samples, a cut to a new time series starts. As this cut influences the
+    PSD of the combined signal, the maximum period (1 / low-frequency cutoff) can be specified.
 
     Methods
     -------
@@ -12,15 +14,17 @@ class ColoredNoiseProcess():
     """
     def __init__(self, beta, size, scale=1, max_period=None, rng=None):
         """Infinite colored noise process.
-        
-        Implemented as a buffer: every `size[-1]` samples, a cut to a new time series starts. As this cut influences the PSD of the combined signal, the maximum period (1 / low-frequency cutoff) can be specified.
+
+        Implemented as a buffer: every `size[-1]` samples, a cut to a new time series starts. As this cut influences
+        the PSD of the combined signal, the maximum period (1 / low-frequency cutoff) can be specified.
 
         Parameters
         ----------
         beta : float
             Exponent of colored noise power-law spectrum.
         size : int or tuple of int
-            Shape of the sampled colored noise signals. The last dimension (`size[-1]`) specifies the time range, and is thus ths maximum possible correlation length of the combined signal.
+            Shape of the sampled colored noise signals. The last dimension (`size[-1]`) specifies the time range, and
+            is thus ths maximum possible correlation length of the combined signal.
         scale : int, optional, by default 1
             Scale parameter with which samples are multiplied
         max_period : float, optional, by default None
@@ -51,7 +55,7 @@ class ColoredNoiseProcess():
     def sample(self):
         """
         Sample a single timestep from the colored nosie process.
-    
+
         The buffer is automatically refilled when necessary.
 
         Returns
@@ -69,10 +73,12 @@ class ColoredNoiseProcess():
 
         return self.scale * self.buffer[..., self.idx]
 
+
 class PinkNoiseProcess(ColoredNoiseProcess):
     """Infinite pink noise process.
-    
-    Implemented as a buffer: every `size[-1]` samples, a cut to a new time series starts. As this cut influences the PSD of the combined signal, the maximum period (1 / low-frequency cutoff) can be specified.
+
+    Implemented as a buffer: every `size[-1]` samples, a cut to a new time series starts. As this cut influences the
+    PSD of the combined signal, the maximum period (1 / low-frequency cutoff) can be specified.
 
     Methods
     -------
@@ -81,13 +87,15 @@ class PinkNoiseProcess(ColoredNoiseProcess):
     """
     def __init__(self, size, scale=1, max_period=None, rng=None):
         """Infinite pink noise process.
-        
-        Implemented as a buffer: every `size[-1]` samples, a cut to a new time series starts. As this cut influences the PSD of the combined signal, the maximum period (1 / low-frequency cutoff) can be specified.
+
+        Implemented as a buffer: every `size[-1]` samples, a cut to a new time series starts. As this cut influences
+        the PSD of the combined signal, the maximum period (1 / low-frequency cutoff) can be specified.
 
         Parameters
         ----------
         size : int or tuple of int
-            Shape of the sampled pink noise signals. The last dimension (`size[-1]`) specifies the time range, and is thus ths maximum possible correlation length of the combined signal.
+            Shape of the sampled pink noise signals. The last dimension (`size[-1]`) specifies the time range, and is
+            thus ths maximum possible correlation length of the combined signal.
         scale : int, optional, by default 1
             Scale parameter with which samples are multiplied
         max_period : float, optional, by default None
