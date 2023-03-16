@@ -28,8 +28,8 @@ from pink import PinkNoiseDist, PinkActionNoise
 
 # Initialize environment
 env = gym.make("MountainCarContinuous-v0")
-action_dim = env.action_space.shape[-1]
 seq_len = env._max_episode_steps
+action_dim = env.action_space.shape[-1]
 ```
 
 #### SAC
@@ -38,10 +38,10 @@ seq_len = env._max_episode_steps
 model = SAC("MlpPolicy", env)
 
 # Set action noise
-model.actor.action_dist = PinkNoiseDist(action_dim, seq_len)
+model.actor.action_dist = PinkNoiseDist(seq_len, action_dim)
 
 # Train agent
-model.learn(total_timesteps=10_000)
+model.learn(total_timesteps=100_000)
 ```
 
 #### TD3
@@ -50,11 +50,11 @@ model.learn(total_timesteps=10_000)
 model = TD3("MlpPolicy", env)
 
 # Set action noise
-noise_scale = 0.3*np.ones(action_dim)
-model.action_noise = PinkActionNoise(noise_scale, seq_len)
+noise_scale = 0.3
+model.action_noise = PinkActionNoise(noise_scale, seq_len, action_dim)
 
 # Train agent
-model.learn(total_timesteps=10_000)
+model.learn(total_timesteps=100_000)
 ```
 
 ### Tonic: MPO
@@ -73,7 +73,7 @@ model = MPO_CN()
 model.initialize(beta, seq_len, env.observation_space, env.action_space)
 
 # Train agent
-trainer = tonic.Trainer(steps=10_000)
+trainer = tonic.Trainer(steps=100_000)
 trainer.initialize(model, env)
 trainer.run()
 ```
@@ -92,4 +92,4 @@ If you use this code in your research, please cite our paper:
 }
 ```
 
-If there are any problems, or you have a question, don't hesitate to open an issue here on GitHub.
+If there are any problems, or if you have a question, don't hesitate to open an issue here on GitHub.

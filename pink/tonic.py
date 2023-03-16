@@ -22,13 +22,19 @@ class MPO_CN(MPO):
 
     def set_beta(self, beta):
         if np.isscalar(beta):
-            beta = [beta] * self.action_space.shape[0]
-        self.cn_processes = [
-            ColoredNoiseProcess(beta=b, size=self.seq_len, rng=self.rng) for b in beta]
+            self.beta = beta
+            self.gen = ColoredNoiseProcess(
+                beta=self.beta, size=(self.action_space.shape[0], self.seq_len), rng=self.rng)
+        else:
+            self.beta = np.asarray(beta)
+            self.gen = [ColoredNoiseProcess(beta=b, size=self.seq_len, rng=self.rng) for b in self.beta]
 
     def _step(self, observations):
         observations = th.as_tensor(observations, dtype=th.float32)
-        cn_sample = th.tensor([[cnp.sample() for cnp in self.cn_processes]]).float()
+        if np.isscalar(self.beta):
+            cn_sample = th.tensor(self.gen.sample()).float()
+        else:
+            cn_sample = th.tensor([[cnp.sample() for cnp in self.gen]]).float()
         with th.no_grad():
             loc = self.model.actor(observations).loc
             scale = self.model.actor(observations).scale

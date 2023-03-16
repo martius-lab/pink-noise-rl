@@ -37,22 +37,21 @@ class ColoredActionNoise(ActionNoise):
         assert (action_dim is not None) == np.isscalar(beta), \
             "`action_dim` has to be specified if and only if `beta` is a scalar."
 
-        self._sigma = np.full(action_dim or len(beta), sigma) if np.isscalar(sigma) else np.asarray(sigma)
-        if action_dim is None:
-            self._vectorized = False
-            self._beta = np.asarray(beta)
-            self._gen = [ColoredNoiseProcess(beta=b, scale=s, size=seq_len, rng=rng)
-                         for b, s in zip(self._beta, self._sigma)]
+        self.sigma = np.full(action_dim or len(beta), sigma) if np.isscalar(sigma) else np.asarray(sigma)
+
+        if np.isscalar(beta):
+            self.beta = beta
+            self.gen = ColoredNoiseProcess(beta=self.beta, scale=self.sigma, size=(action_dim, seq_len), rng=rng)
         else:
-            self._vectorized = True
-            self._beta = beta
-            self._gen = ColoredNoiseProcess(beta=self._beta, scale=self._sigma, size=(action_dim, seq_len), rng=rng)
+            self.beta = np.asarray(beta)
+            self.gen = [ColoredNoiseProcess(beta=b, scale=s, size=seq_len, rng=rng)
+                        for b, s in zip(self.beta, self.sigma)]
 
     def __call__(self) -> np.ndarray:
-        return self._gen.sample() if self._vectorized else np.asarray([g.sample() for g in self._gen])
+        return self.gen.sample() if np.isscalar(self.beta) else np.asarray([g.sample() for g in self.gen])
 
     def __repr__(self) -> str:
-        return f"ColoredActionNoise(beta={self._beta}, sigma={self._sigma})"
+        return f"ColoredActionNoise(beta={self.beta}, sigma={self.sigma})"
 
 
 class PinkActionNoise(ColoredActionNoise):
@@ -108,27 +107,25 @@ class ColoredNoiseDist(SquashedDiagGaussianDistribution):
         assert (action_dim is not None) == np.isscalar(beta), \
             "`action_dim` has to be specified if and only if `beta` is a scalar."
 
-        if action_dim is None:
-            super().__init__(len(beta), epsilon)
-            self._vectorized = False
-            self._beta = np.asarray(beta)
-            self._gen = [ColoredNoiseProcess(beta=b, size=seq_len, rng=rng) for b in self._beta]
-        else:
+        if np.isscalar(beta):
             super().__init__(action_dim, epsilon)
-            self._vectorized = True
-            self._beta = beta
-            self._gen = ColoredNoiseProcess(beta=self._beta, size=(action_dim, seq_len), rng=rng)
+            self.beta = beta
+            self.gen = ColoredNoiseProcess(beta=self.beta, size=(action_dim, seq_len), rng=rng)
+        else:
+            super().__init__(len(beta), epsilon)
+            self.beta = np.asarray(beta)
+            self.gen = [ColoredNoiseProcess(beta=b, size=seq_len, rng=rng) for b in self.beta]
 
     def sample(self) -> th.Tensor:
-        if self._vectorized:
-            cn_sample = th.tensor(self._gen.sample()).float()
+        if np.isscalar(self.beta):
+            cn_sample = th.tensor(self.gen.sample()).float()
         else:
-            cn_sample = th.tensor([cnp.sample() for cnp in self._gen]).float()
+            cn_sample = th.tensor([cnp.sample() for cnp in self.gen]).float()
         self.gaussian_actions = self.distribution.mean + self.distribution.stddev*cn_sample
         return th.tanh(self.gaussian_actions)
 
     def __repr__(self) -> str:
-        return f"ColoredNoiseDist(beta={self._beta})"
+        return f"ColoredNoiseDist(beta={self.beta})"
 
 
 class PinkNoiseDist(ColoredNoiseDist):

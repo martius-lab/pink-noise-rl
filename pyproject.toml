@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "pink-noise-rl"
-version = "1.0.1"
+version = "2.0.0"
 description = "Pink noise for exploration in reinforcement learning"
 authors = ["Onno Eberhard <onnoeberhard@gmail.com>"]
 license = "MIT"
