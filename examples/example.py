@@ -1,21 +1,28 @@
 """Comparing pink action noise with the default noise on SAC."""
 
 import gym
+import numpy as np
+import torch
+from pink import PinkNoiseDist
 from stable_baselines3 import SAC
 
-from pink import PinkNoiseDist
+# Reproducibility
+seed = 0
+np.random.seed(seed)
+torch.manual_seed(seed)
+rng = np.random.default_rng(seed)
 
-# Initialize environment
+# Initialize environment and RNG for reproducibility
 env = gym.make("MountainCarContinuous-v0")
 action_dim = env.action_space.shape[-1]
 seq_len = env._max_episode_steps
 
 # Initialize agents
-model_default = SAC("MlpPolicy", env)
-model_pink = SAC("MlpPolicy", env)
+model_default = SAC("MlpPolicy", env, seed=seed)
+model_pink = SAC("MlpPolicy", env, seed=seed)
 
 # Set action noise
-model_pink.actor.action_dist = PinkNoiseDist(action_dim, seq_len)
+model_pink.actor.action_dist = PinkNoiseDist(action_dim, seq_len, rng=rng)
 
 # Train agents
 model_default.learn(total_timesteps=10_000)
