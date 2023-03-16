@@ -30,9 +30,9 @@ class ColoredNoiseProcess():
         max_period : float, optional, by default None
             Maximum correlation length of sampled colored noise singals (1 / low-frequency cutoff). If None, it is
             automatically set to `size[-1]` (the sequence length).
-        rng : np.random.Generator, optional, by default None
-            Random number generator (for reproducibility). If None, a new random number generator is created by calling
-            `np.random.default_rng()`.
+        rng : np.random.Generator, optional
+            Random number generator (for reproducibility). If not passed, a new random number generator is created by
+            calling `np.random.default_rng()`.
         """
         self.beta = beta
         if max_period is None:
@@ -101,8 +101,8 @@ class PinkNoiseProcess(ColoredNoiseProcess):
         max_period : float, optional, by default None
             Maximum correlation length of sampled pink noise singals (1 / low-frequency cutoff). If None, it is
             automatically set to `size[-1]` (the sequence length).
-        rng : np.random.Generator, optional, by default None
-            Random number generator (for reproducibility). If None, a new random number generator is created by calling
-            `np.random.default_rng()`.
+        rng : np.random.Generator, optional
+            Random number generator (for reproducibility). If not passed, a new random number generator is created by
+            calling `np.random.default_rng()`.
         """
         super().__init__(1, size, scale, max_period, rng)

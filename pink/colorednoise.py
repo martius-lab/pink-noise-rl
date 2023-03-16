@@ -47,8 +47,9 @@ def powerlaw_psd_gaussian(exponent, size, fmin=0, rng=None):
         frequency. The output for this value is white noise.
 
     rng : np.random.Generator, optional
-        Random number generator (for reproducibility). If None (default), a new
-        random number generator is created by calling np.random.default_rng().
+        Random number generator (for reproducibility). If not passed, a new
+        random number generator is created by calling
+        `np.random.default_rng()`.
 
 
     Returns
