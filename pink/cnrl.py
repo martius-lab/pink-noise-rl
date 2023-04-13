@@ -1,3 +1,5 @@
+import numpy as np
+
 from . import colorednoise as cn
 
 
@@ -9,8 +11,10 @@ class ColoredNoiseProcess():
 
     Methods
     -------
-    sample()
-        Sample a single timestep from the colored nosie process.
+    sample(T=1)
+        Sample `T` timesteps from the colored noise process.
+    reset()
+        Reset the buffer with a new time series.
     """
     def __init__(self, beta, size, scale=1, max_period=None, rng=None):
         """Infinite colored noise process.
@@ -49,29 +53,43 @@ class ColoredNoiseProcess():
             self.size = [size]
         self.time_steps = self.size[-1]
 
-        # Set first time-step such that buffer will be initialized
-        self.idx = self.time_steps
+        # Fill buffer and reset index
+        self.reset()
 
-    def sample(self):
+    def reset(self):
+        """Reset the buffer with a new time series."""
+        self.buffer = cn.powerlaw_psd_gaussian(
+                exponent=self.beta, size=self.size, fmin=self.minimum_frequency, rng=self.rng)
+        self.idx = 0
+
+    def sample(self, T=1):
         """
-        Sample a single timestep from the colored nosie process.
+        Sample `T` timesteps from the colored noise process.
 
         The buffer is automatically refilled when necessary.
+
+        Parameters
+        ----------
+        T : int, optional, by default 1
+            Number of samples to draw
 
         Returns
         -------
         array_like
-            Sampled vector of shape `size[:-1]`
+            Sampled vector of shape `(*size[:-1], T)`
         """
-        self.idx += 1    # Next time step
+        n = 0
+        ret = []
+        while n < T:
+            if self.idx >= self.time_steps:
+                self.reset()
+            m = min(T - n, self.time_steps - self.idx)
+            ret.append(self.buffer[..., self.idx:(self.idx + m)])
+            n += m
+            self.idx += m
 
-        # Refill buffer if depleted
-        if self.idx >= self.time_steps:
-            self.buffer = cn.powerlaw_psd_gaussian(
-                exponent=self.beta, size=self.size, fmin=self.minimum_frequency, rng=self.rng)
-            self.idx = 0
-
-        return self.scale * self.buffer[..., self.idx]
+        ret = self.scale * np.concatenate(ret, axis=-1)
+        return ret if n > 1 else ret[..., 0]
 
 
 class PinkNoiseProcess(ColoredNoiseProcess):
@@ -82,8 +100,10 @@ class PinkNoiseProcess(ColoredNoiseProcess):
 
     Methods
     -------
-    sample()
-        Sample a single timestep from the pink nosie process.
+    sample(T=1)
+        Sample `T` timesteps from the pink noise process.
+    reset()
+        Reset the buffer with a new time series.
     """
     def __init__(self, size, scale=1, max_period=None, rng=None):
         """Infinite pink noise process.
