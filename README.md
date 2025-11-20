@@ -18,7 +18,17 @@ Note: In Python, the import statement is simply `import pink`.
 ## Usage
 We provide minimal examples for using pink noise on SAC, TD3 and MPO below. An example comparing pink noise with the default action noise of SAC is included in the `examples` directory.
 
+### Simple pink noise process
+```python
+from pink import PinkNoiseProcess
+
+noise = PinkNoiseProcess((10, 1000))  # 10-dimensional pink noise process with buffer size 1000
+noise.sample()      # Sample a single 10-dimensional time step
+noise.sample(5000)  # Sample 5000 time steps at once. Since the buffer size is 1000, 5 independent signals are stitched together.
+```
+
 ### Stable Baselines3: SAC, TD3
+This example only works if Stable Baselines3 is installed.
 ```python
 import gym
 from stable_baselines3 import SAC, TD3
@@ -58,6 +68,7 @@ model.learn(total_timesteps=100_000)
 ```
 
 ### Tonic: MPO
+This example only works if Tonic is installed.
 ```python
 import gym
 from tonic import Trainer
